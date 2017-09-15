@@ -1,0 +1,55 @@
+---
+title: "SQL"
+output: html_document
+---
+
+```{r message=FALSE}
+library(sqldf)
+library(Lahman)
+```
+
+
+##Filtering Columns and Row
+
+description
+
+Homerun totals for the 1927 Yankees.
+
+```{r}
+query<- "SELECT teamID,yearID,HR,playerID
+FROM Batting
+WHERE teamID='NYA' and yearID=1927"
+
+sqldf(query)
+```
+
+Every Yankee that has hit 40 or more homeruns
+
+```{r}
+query<- "SELECT teamID,yearID,HR,playerID
+FROM Batting 
+WHERE teamID='NYA'and HR>=40"
+
+sqldf(query)
+```
+
+Find an instance where a player has had more than 40 homeruns but less than 60 strikeouts.
+
+```{r}
+query<- "SELECT playerID,HR,SO,teamID,yearID
+FROM Batting
+WHERE HR>40 and SO<60"
+
+sqldf(query)
+```
+
+1970s Phillies hitting more than 30 homeruns.
+
+```{r}
+query<-"SELECT playerID,HR,yearID
+FROM Batting
+WHERE teamID='PHI'and HR>30 and yearID>=1970 and yearID<=1979"
+
+sqldf(query)
+```
+
