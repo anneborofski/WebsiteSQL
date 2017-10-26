@@ -3,63 +3,173 @@ title: "SQL"
 output: html_document
 ---
 
+###Filtering Columns and Rows
+
+In SQL you can filter columns and rows of different tables. The columns can be filtered using SELECT while the rows can be filtered using WHERE. Keep in mind, capitalization does matter when using any command. Below is an example with examples with baseball and the Lahman package.
+
+However, make sure the Lahman and sqldf packages are loaded in by going to the Tools bar and selecting "install packages". 
+
 ```{r message=FALSE}
 library(sqldf)
 library(Lahman)
 ```
 
 
-##Filtering Columns and Row
-
-description
-
-Homerun totals for the 1927 Yankees.
+Below is an example of filtering in the Batting table while using the Lahman package. Here is the homerun totals for the Yankees in 1927.
 
 ```{r}
-query<- "SELECT teamID,yearID,HR,playerID
-FROM Batting
+query<- "SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and yearID=1927"
 
 sqldf(query)
 ```
 
-Every Yankee that has hit 40 or more homeruns
+Next are 3 more examples using the same filters but more complex selections with the data. The examples below are still using the Batting table and the Lahman database.
+
+##Example 1
+
+Find all instances where Yankees have hit 40 or more homeruns.
+
+Here, we now want to see the player and the year it occured in addition to the number of homeruns and the team name. In order to be selective in your search the equal sign in the WHERE command can be substituted with a greater or less than sign.
 
 ```{r}
-query<- "SELECT teamID,yearID,HR,playerID
-FROM Batting 
+query<- "SELECT playerID,teamID,yearID,HR FROM Batting 
 WHERE teamID='NYA'and HR>=40"
 
 sqldf(query)
 ```
 
-Find an instance where a player has had more than 40 homeruns but less than 60 strikeouts.
+##Example 2
+
+Find an instance where a player had more than 40 homeruns but less than 60 strikeouts.
 
 ```{r}
-query<- "SELECT playerID,HR,SO,teamID,yearID
-FROM Batting
+query<- "SELECT playerID,teamID,yearID,HR,SO FROM Batting
 WHERE HR>40 and SO<60"
 
 sqldf(query)
 ```
 
-1970s Phillies hitting more than 30 homeruns.
+##Example 3
+
+Find all instances of Phillies hitting more than 30 homeruns in the 1970s.
 
 ```{r}
-query<-"SELECT playerID,HR,yearID
-FROM Batting
-WHERE teamID='PHI'and HR>30 and yearID>=1970 and yearID<=1979"
+query<-"SELECT playerID,teamID,yearID,HR FROM Batting
+WHERE teamID='PHI'and yearID>1970 and yearID<=1979 and HR>30"
 
 sqldf(query)
 ```
 
-## ORDER BY
+###Ordering Data Outputs
 
-## AGGREGATION
+You can also order output by using the ORDER BY command. By default, the ordering will be done in ascending order (smallest to largest) but if you want it largest to smallest input the DESC command after the ORDER BY command.
 
-## JOINING
+##Example 1
 
-Find all instances where Babe Ruth hit homeruns with full name instead of teamID.
+Find every instance of a player hitting more than 50 homeruns and order it highest to lowest of the homerun total.
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting
+WHERE HR>50
+ORDER BY HR DESC"
+
+sqldf(query)
+```
+
+##Example 2
+
+Find all instances of a player striking out less than 10 times. Every player must have had at least 400 at bats or AB. Then, order it by least to most strikeouts. 
+
+```{r}
+query<-'SELECT playerID,yearID,teamID,SO,AB,FROM Batting
+WHERE SO<10 and AB>=400
+ORDER BY SO
+
+sqldf(query)
+```
+
+###AGGREGATION
+
+Aggregation allows you to group and basically compact information together. You can do this by using the GROUP BY command but you must be specific on how you want them to be grouped. Therefore, you can average, add, and find the minimum or maximum. Below are the specific commands you need to attach to the column names to produce your answer.
+
+-summation: sum(colname)
+-average: avg(colname)
+-maximum: max(colname)
+-minimum: min(colname)
+
+If you want to continue to filter after the grouping then use the HAVING command.
+
+##Example 1
+
+Find the career homerun totals for Babe Ruth.
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting
+WHERE playerID='ruthba01'
+GROUP BY playerID"
+
+sqldf(query)
+```
+
+##Example 2
+Find career homerun totals for all players but only those with a total homerun count of 600 or more. Make sure it is in descending order.
+
+```{r}
+query<-"SELECT playerID,sum(HR) FROM Batting
+GROUP BY playerID
+HAVING sum(HR)>=600
+ORDER BY sum(HR) DESC"
+
+sqldf(query)
+```
+
+##Example 3
+
+Find the players that have the highest average per season homerun totals. Then, list only those players with averages that are greater than 30 and order from highest to lowest.
+
+```{r}
+query<-"SELECT playerID,avg(HR) FROM Batting
+GROUP BY playerID
+HAVING avg(HR)>30
+ORDER BY avg(HR) DESC"
+
+sqldf(query)
+```
+
+### JOINING
+
+Joining lets you join different tables together based on common data sets to display more information. This can be done by using the INNER JOIN command and the ON command. When using the INNER JOIN command, you are telling the program which tables that are being joined together. The ON command tells the program of the common data the tables will be joined by. However, if the data that is common between the tables is alone you will have to specify which table it is coming from or replaced from another table.
+
+##Example 1
+
+Show the first and last name, with the team, year, and homeruns for Babe Ruth.
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,teamID,yearID,HR
+FROM Batting INNER JOIN MASTER
+ON Batting.playerID=Master.playerID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+##Example 2
+
+Find all instances where players got more than 50 homeruns. Start with the greatest number and include the first and last names. Also, include the team, year, and homeruns. 
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,teamID,yearID,HR
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE HR>50
+ORDER BY DESC"
+
+sqldf(query)
+```
+
+##Example 3
+
+Find all instances where Babe Ruth hit homeruns showing teamID.
 ```{r}
 query<-"SELECT playerID,name, Batting.yearID, Batting.HR
 FROM Batting INNER JOIN Teams
@@ -67,11 +177,26 @@ ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
 WHERE playerID='ruthba01'"
 
 sqldf(query)
-
-
 ```
 
-Find career homerun totals for players who have at least 600 homeruns. Display from the highest amount to the lowest, with first and last names.
+##Example 4
+
+Find Babe Ruth's homerun totals. Show first and last name and the team name.
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,name,Batting.yearID,Batting.HR
+FROM (Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID) INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+```
+
+
+##Example 5
+
+Find career homerun totals for players who have at least 600 homeruns. Display from the highest amount to the lowest amount, show first and last names.
 
 ```{r}
 query<-"SELECT nameFIRST,nameLAST,sum(HR)
@@ -82,5 +207,20 @@ HAVING sum(HR)>=600
 ORDER BY sum(HR) DESC"
 
 sqldf(query)
+```
+
+##Example 6
+
+Find all players, using first and last name, with the first name of Bob, and averaged more than one million dollars in salary in their career.
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,avg(salary)
+FROM Salaries INNER JOIN Master
+ON Salaries.playerID=Master.playerID
+GROUP BY Salaries.playerID
+HAVING nameFIRST='Bob' and avg(salary)>1000000
+ORDER BY avg(salary) DESC
+
+sqldf(query)"
 ```
 
