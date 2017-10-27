@@ -9,7 +9,7 @@ In SQL you can filter columns and rows of different tables. The columns can be f
 
 However, make sure the Lahman and sqldf packages are loaded in by going to the Tools bar and selecting "install packages". 
 
-```{r message=FALSE,warning=FALSE} 
+```{r message=FALSE, warning=FALSE} 
 library(sqldf)
 library(Lahman)
 ```

@@ -121,13 +121,11 @@ $(document).ready(function () {
 
 
 <div id="filtering-columns-and-rows" class="section level3">
-<h3>Filtering Columns and Rows</h3>
+<h3>FILTERING COLUMNS AND ROWS</h3>
 <p>In SQL you can filter columns and rows of different tables. The columns can be filtered using SELECT while the rows can be filtered using WHERE. Keep in mind, capitalization does matter when using any command. Below is an example with examples with baseball and the Lahman package.</p>
 <p>However, make sure the Lahman and sqldf packages are loaded in by going to the Tools bar and selecting “install packages”.</p>
-<pre class="r"><code>library(sqldf)</code></pre>
-<pre><code>## Warning: package 'sqldf' was built under R version 3.4.2</code></pre>
-<pre class="r"><code>library(Lahman)</code></pre>
-<pre><code>## Warning: package 'Lahman' was built under R version 3.4.2</code></pre>
+<pre class="r"><code>library(sqldf)
+library(Lahman)</code></pre>
 <p>Below is an example of filtering in the Batting table while using the Lahman package. Here is the homerun totals for the Yankees in 1927.</p>
 <pre class="r"><code>query&lt;- &quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='NYA' and yearID=1927&quot;
@@ -160,9 +158,8 @@ sqldf(query)</code></pre>
 ## 24 thomamy01    NYA   1927  0
 ## 25  weraju01    NYA   1927  1</code></pre>
 <p>Next are 3 more examples using the same filters but more complex selections with the data. The examples below are still using the Batting table and the Lahman database.</p>
-</div>
-<div id="example-1" class="section level2">
-<h2>Example 1</h2>
+<div id="example-1" class="section level4">
+<h4>Example 1</h4>
 <p>Find all instances where Yankees have hit 40 or more homeruns.</p>
 <p>Here, we now want to see the player and the year it occured in addition to the number of homeruns and the team name. In order to be selective in your search the equal sign in the WHERE command can be substituted with a greater or less than sign.</p>
 <pre class="r"><code>query&lt;- &quot;SELECT playerID,teamID,yearID,HR FROM Batting 
@@ -201,8 +198,8 @@ sqldf(query)</code></pre>
 ## 29 grandcu01    NYA   2011 41
 ## 30 grandcu01    NYA   2012 43</code></pre>
 </div>
-<div id="example-2" class="section level2">
-<h2>Example 2</h2>
+<div id="example-2" class="section level4">
+<h4>Example 2</h4>
 <p>Find an instance where a player had more than 40 homeruns but less than 60 strikeouts.</p>
 <pre class="r"><code>query&lt;- &quot;SELECT playerID,teamID,yearID,HR,SO FROM Batting
 WHERE HR&gt;40 and SO&lt;60&quot;
@@ -238,8 +235,8 @@ sqldf(query)</code></pre>
 ## 27 pujolal01    SLN   2004 46 52
 ## 28 pujolal01    SLN   2006 49 50</code></pre>
 </div>
-<div id="example-3" class="section level2">
-<h2>Example 3</h2>
+<div id="example-3" class="section level4">
+<h4>Example 3</h4>
 <p>Find all instances of Phillies hitting more than 30 homeruns in the 1970s.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE teamID='PHI'and yearID&gt;1970 and yearID&lt;=1979 and HR&gt;30&quot;
@@ -255,13 +252,13 @@ sqldf(query)</code></pre>
 ## 7 schmimi01    PHI   1977 38
 ## 8 luzingr01    PHI   1978 35
 ## 9 schmimi01    PHI   1979 45</code></pre>
+</div>
+</div>
 <div id="ordering-data-outputs" class="section level3">
-<h3>Ordering Data Outputs</h3>
+<h3>ORDERING DATA OUTPUTS</h3>
 <p>You can also order output by using the ORDER BY command. By default, the ordering will be done in ascending order (smallest to largest) but if you want it largest to smallest input the DESC command after the ORDER BY command.</p>
-</div>
-</div>
-<div id="example-1-1" class="section level2">
-<h2>Example 1</h2>
+<div id="example-1-1" class="section level4">
+<h4>Example 1</h4>
 <p>Find every instance of a player hitting more than 50 homeruns and order it highest to lowest of the homerun total.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE HR&gt;50
@@ -306,8 +303,8 @@ sqldf(query)</code></pre>
 ## 35 fieldce01   1990    DET 51
 ## 36 jonesan01   2005    ATL 51</code></pre>
 </div>
-<div id="example-2-1" class="section level2">
-<h2>Example 2</h2>
+<div id="example-2-1" class="section level4">
+<h4>Example 2</h4>
 <p>Find all instances of a player striking out less than 10 times. Every player must have had at least 400 at bats or AB. Then, order it by least to most strikeouts.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,SO,AB FROM Batting
 WHERE SO&lt;10 and AB&gt;=400
@@ -380,15 +377,15 @@ sqldf(query)</code></pre>
 ## 63 holmeto01   1945    BSN  9 636
 ## 64 boudrlo01   1948    CLE  9 560
 ## 65 mitchda01   1952    CLE  9 511</code></pre>
+</div>
+</div>
 <div id="aggregation" class="section level3">
 <h3>AGGREGATION</h3>
 <p>Aggregation allows you to group and basically compact information together. You can do this by using the GROUP BY command but you must be specific on how you want them to be grouped. Therefore, you can average, add, and find the minimum or maximum. Below are the specific commands you need to attach to the column names to produce your answer.</p>
 <p>-summation: sum(colname) -average: avg(colname) -maximum: max(colname) -minimum: min(colname)</p>
 <p>If you want to continue to filter after the grouping then use the HAVING command.</p>
-</div>
-</div>
-<div id="example-1-2" class="section level2">
-<h2>Example 1</h2>
+<div id="example-1-2" class="section level4">
+<h4>Example 1</h4>
 <p>Find the career homerun totals for Babe Ruth.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting
 WHERE playerID='ruthba01'
@@ -398,8 +395,8 @@ sqldf(query)</code></pre>
 <pre><code>##   playerID sum(HR)
 ## 1 ruthba01     714</code></pre>
 </div>
-<div id="example-2-2" class="section level2">
-<h2>Example 2</h2>
+<div id="example-2-2" class="section level4">
+<h4>Example 2</h4>
 <p>Find career homerun totals for all players but only those with a total homerun count of 600 or more. Make sure it is in descending order.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting
 GROUP BY playerID
@@ -417,8 +414,8 @@ sqldf(query)</code></pre>
 ## 7 thomeji01     612
 ## 8  sosasa01     609</code></pre>
 </div>
-<div id="example-3-1" class="section level2">
-<h2>Example 3</h2>
+<div id="example-3-1" class="section level4">
+<h4>Example 3</h4>
 <p>Find the players that have the highest average per season homerun totals. Then, list only those players with averages that are greater than 30 and order from highest to lowest.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,avg(HR) FROM Batting
 GROUP BY playerID
@@ -440,13 +437,13 @@ sqldf(query)</code></pre>
 ## 11 rodrial01 31.63636
 ## 12 schmimi01 30.44444
 ## 13 abreujo02 30.33333</code></pre>
+</div>
+</div>
 <div id="joining" class="section level3">
 <h3>JOINING</h3>
 <p>Joining lets you join different tables together based on common data sets to display more information. This can be done by using the INNER JOIN command and the ON command. When using the INNER JOIN command, you are telling the program which tables that are being joined together. The ON command tells the program of the common data the tables will be joined by. However, if the data that is common between the tables is alone you will have to specify which table it is coming from or replaced from another table.</p>
-</div>
-</div>
-<div id="example-1-3" class="section level2">
-<h2>Example 1</h2>
+<div id="example-1-3" class="section level4">
+<h4>Example 1</h4>
 <p>Show the first and last name, with the team, year, and homeruns for Babe Ruth.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,teamID,yearID,HR
 FROM Batting INNER JOIN Master
@@ -478,8 +475,8 @@ sqldf(query)</code></pre>
 ## 21      Babe     Ruth    NYA   1934 22
 ## 22      Babe     Ruth    BSN   1935  6</code></pre>
 </div>
-<div id="example-2-3" class="section level2">
-<h2>Example 2</h2>
+<div id="example-2-3" class="section level4">
+<h4>Example 2</h4>
 <p>Find all instances where players got more than 50 homeruns. Start with the greatest number and include the first and last names. Also, include the team, year, and homeruns.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,teamID,yearID,HR
 FROM Batting INNER JOIN Master
@@ -526,8 +523,8 @@ sqldf(query)</code></pre>
 ## 35     Cecil   Fielder    DET   1990 51
 ## 36    Andruw     Jones    ATL   2005 51</code></pre>
 </div>
-<div id="example-3-2" class="section level2">
-<h2>Example 3</h2>
+<div id="example-3-2" class="section level4">
+<h4>Example 3</h4>
 <p>Find all instances where Babe Ruth hit homeruns showing teamID.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,name, Batting.yearID, Batting.HR
 FROM Batting INNER JOIN Teams
@@ -559,8 +556,8 @@ sqldf(query)</code></pre>
 ## 21 ruthba01 New York Yankees   1934 22
 ## 22 ruthba01    Boston Braves   1935  6</code></pre>
 </div>
-<div id="example-4" class="section level2">
-<h2>Example 4</h2>
+<div id="example-4" class="section level4">
+<h4>Example 4</h4>
 <p>Find Babe Ruth’s homerun totals. Show first and last name and the team name.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,name,Batting.yearID,Batting.HR
 FROM (Batting INNER JOIN Master
@@ -593,8 +590,8 @@ sqldf(query)</code></pre>
 ## 21      Babe     Ruth New York Yankees   1934 22
 ## 22      Babe     Ruth    Boston Braves   1935  6</code></pre>
 </div>
-<div id="example-5" class="section level2">
-<h2>Example 5</h2>
+<div id="example-5" class="section level4">
+<h4>Example 5</h4>
 <p>Find career homerun totals for players who have at least 600 homeruns. Display from the highest amount to the lowest amount, show first and last names.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,sum(HR)
 FROM Batting INNER JOIN Master 
@@ -614,8 +611,9 @@ sqldf(query)</code></pre>
 ## 7       Jim     Thome     612
 ## 8     Sammy      Sosa     609</code></pre>
 </div>
-<div id="example-6" class="section level2">
-<h2>Example 6</h2>
+</div>
+<div id="example-6" class="section level3">
+<h3>Example 6</h3>
 <p>Find all players, using first and last name, with the first name of Bob, and averaged more than one million dollars in salary in their career.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,avg(salary)
 FROM Salaries INNER JOIN Master
