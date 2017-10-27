@@ -82,9 +82,9 @@ sqldf(query)
 Find all instances of a player striking out less than 10 times. Every player must have had at least 400 at bats or AB. Then, order it by least to most strikeouts. 
 
 ```{r}
-query<-'SELECT playerID,yearID,teamID,SO,AB,FROM Batting
+query<-"SELECT playerID,yearID,teamID,SO,AB FROM Batting
 WHERE SO<10 and AB>=400
-ORDER BY SO
+ORDER BY SO"
 
 sqldf(query)
 ```
@@ -136,7 +136,7 @@ ORDER BY avg(HR) DESC"
 sqldf(query)
 ```
 
-### JOINING
+###JOINING
 
 Joining lets you join different tables together based on common data sets to display more information. This can be done by using the INNER JOIN command and the ON command. When using the INNER JOIN command, you are telling the program which tables that are being joined together. The ON command tells the program of the common data the tables will be joined by. However, if the data that is common between the tables is alone you will have to specify which table it is coming from or replaced from another table.
 
@@ -146,7 +146,7 @@ Show the first and last name, with the team, year, and homeruns for Babe Ruth.
 
 ```{r}
 query<-"SELECT nameFIRST,nameLAST,teamID,yearID,HR
-FROM Batting INNER JOIN MASTER
+FROM Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID
 WHERE Batting.playerID='ruthba01'"
 
@@ -162,7 +162,7 @@ query<-"SELECT nameFIRST,nameLAST,teamID,yearID,HR
 FROM Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID
 WHERE HR>50
-ORDER BY DESC"
+ORDER BY HR DESC"
 
 sqldf(query)
 ```
@@ -193,7 +193,6 @@ WHERE Batting.playerID='ruthba01'"
 sqldf(query)
 ```
 
-
 ##Example 5
 
 Find career homerun totals for players who have at least 600 homeruns. Display from the highest amount to the lowest amount, show first and last names.
@@ -219,8 +218,8 @@ FROM Salaries INNER JOIN Master
 ON Salaries.playerID=Master.playerID
 GROUP BY Salaries.playerID
 HAVING nameFIRST='Bob' and avg(salary)>1000000
-ORDER BY avg(salary) DESC
+ORDER BY avg(salary) DESC"
 
-sqldf(query)"
+sqldf(query)
 ```
 
